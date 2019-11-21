@@ -1,0 +1,88 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xl-8 offset-md-2">
+            <h1 class="text-center">{{title}}</h1>
+            <form action="/todo" method="post">
+                <div class="form-group">
+                    <input class="form-control" id="id" type="hidden" name="id">
+                    <label for="todotext">Todo Text:</label>
+                    <input class="form-control" id="todotext" type="text" name="todotext">
+                </div>
+                <div id="subt">
+
+                </div>
+               <div id="subtmore">
+
+                </div>
+
+                <div class="form-group"><button class="btn btn-primary" id="sub" type="submit">Add</button></div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-8 offset-md-2">
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th>Sn </th>
+                        <th>Todo Text</th>
+                        <th>Sub Todo Text</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each alltodo}}
+                    <tr>
+                        <td>{{@index}}</td>
+                        <td>{{this.todotext}}</td>
+                        <td>{{this.subtodotext}}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary dis"
+                                onclick="edit('{{this._id}}','{{this.todotext}}')">Edit</button>
+                            <button type="button" class="btn btn-danger dis" onclick="del('{{this._id}}')">Delete</button>
+                            <button type="button" class="btn btn-secondary dis"
+                                onclick="addsubtask('{{this._id}}','{{this.todotext}}','{{this.subtodotext}}')">Add
+                                subtask</button>
+                        </td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function edit(id, todotext) {
+        $('#id').val(id)
+        $('#todotext').val(todotext)
+        $('#sub').text('Update')
+    }
+    function del(id) {
+        var ans = confirm("Are you sure");
+        if (ans) {
+            window.location.replace('/delete/' + id)
+        }
+
+    }
+    function addsubtask(id, todotext, subtodotext, ) {
+        $(".dis").attr("disabled", true);
+        var res = subtodotext.split(",");
+        $('#id').val(id)
+        $('#todotext').val(todotext)
+        $('#sub').text('Update')
+        $('#subtmore').append('<div class="form-group"><button type="button" class="btn btn-sm btn-primary" onclick="addmore()">Add More</button> <br></div>')
+        $('#subt').append('<label> Subtask</label>')
+        var i;
+        for (i = 0; i < res.length; i++) {
+            $('#subt').append('<div id="sub_' + i + '" class="form-group"><input class="form-control1 ch-form" id="todotext" type="text" name="subtodotext" value="' + res[i] + '" ><button type="button" class="btn btn-sm btn-danger" onclick="removesubtask(' + i + ')">Delete</button></div>')
+        }
+    }
+    function removesubtask(id) {
+        $('#sub_' + id).remove();
+    }
+    function addmore() {   
+        var i=100;     
+      $('#subt').append('<div id="sub_' + i + '" class="form-group"><input class="form-control1 ch-form" id="todotext" type="text" name="subtodotext"  ><button type="button" class="btn btn-sm btn-danger" onclick="removesubtask(' + i + ')">Delete</button></div>')
+
+    }
+</script>
